@@ -54,18 +54,14 @@ const Topbar = ({ currentUser }: TobarProps) => {
         {/* <SearchInput /> */}
         <div className="flex gap-1 items-center">
           <div className="flex mr-2">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}toggle
             {/* <NavMenu /> */}
           </div>
           {/* <UserButton afterSignOutUrl="/" /> */}
-          {!currentUser && (
+          {!currentUser ? (
             <div className="flex gap-2 items-center">
               <Link
                 href={"/auth"}
-                // onClick={() => router.push("/auth")}
-                // variant={"ghost"}
-                // size={"sm"}
-                // className="hover:underline"
                 className={cn("hover:underline", topOfPage ? "" : "text-white")}
               >
                 Sign in
@@ -79,6 +75,19 @@ const Topbar = ({ currentUser }: TobarProps) => {
                 )}
               >
                 Sign up now
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <Button
+                onClick={() => router.push("/store")}
+                size={"sm"}
+                className={cn(
+                  "py-4 px-5",
+                  topOfPage ? "" : "bg-white text-black hover:text-white"
+                )}
+              >
+                Go to admin
               </Button>
             </div>
           )}

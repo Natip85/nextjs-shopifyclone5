@@ -12,11 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 export function ThemeToggle() {
   const { setTheme } = useTheme();
   const [topOfPage, setTopOfPage] = React.useState<boolean>(true);
-
+  const pathname = usePathname();
   React.useEffect(() => {
     const handleScroll = () => {
       setTopOfPage(window.scrollY === 0);
@@ -32,7 +33,7 @@ export function ThemeToggle() {
           <Sun
             className={cn(
               "rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0",
-              topOfPage ? "" : "text-white"
+              pathname === "/" && !topOfPage ? "text-white" : ""
             )}
           />
           <Moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
