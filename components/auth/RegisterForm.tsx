@@ -21,6 +21,7 @@ import { useToast } from "../ui/use-toast";
 import axios from "axios";
 import { signIn, useSession } from "next-auth/react";
 const formSchema = z.object({
+  firstName: z.string().optional(),
   lastName: z.string().min(3, {
     message: "Name must be at least 3 characters long",
   }),
@@ -53,6 +54,7 @@ const RegisterForm = () => {
       email: "",
       password: "",
       lastName: "",
+      firstName: "",
     },
   });
 
