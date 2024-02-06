@@ -20,21 +20,7 @@ import { PasswordInput } from "../ui/password-input";
 import { useToast } from "../ui/use-toast";
 import axios from "axios";
 import { signIn, useSession } from "next-auth/react";
-const formSchema = z.object({
-  firstName: z.string().optional(),
-  lastName: z.string().min(3, {
-    message: "Name must be at least 3 characters long",
-  }),
-  name: z.string().min(3, {
-    message: "Name must be at least 3 characters long",
-  }),
-  email: z.string().email({
-    message: "Invalid email address",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters long",
-  }),
-});
+import { registerFormSchema } from "@/validations/register";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -47,8 +33,8 @@ const RegisterForm = () => {
     }
   }, [session?.status, router]);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof registerFormSchema>>({
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -63,7 +49,7 @@ const RegisterForm = () => {
     setIsLoading(!isFormValid);
   }, [form.formState.isValid]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof registerFormSchema>) {
     setIsLoading(true);
     axios
       .post("/api/register", values)

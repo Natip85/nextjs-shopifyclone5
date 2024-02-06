@@ -23,21 +23,14 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import { PasswordInput } from "../ui/password-input";
+import { loginFormSchema } from "@/validations/login";
 
-type Variant = "LOGIN" | "REGISTER";
+type UserVariant = "LOGIN" | "REGISTER";
 
-const formSchema = z.object({
-  email: z.string().min(6, {
-    message: "Invalid email address",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters long",
-  }),
-});
 const AuthForm = () => {
   const session = useSession();
   const router = useRouter();
-  const [variant, setVariant] = useState<Variant>("LOGIN");
+  const [variant, setVariant] = useState<UserVariant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   useEffect(() => {
@@ -53,14 +46,14 @@ const AuthForm = () => {
       setVariant("LOGIN");
     }
   }, [variant]);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof loginFormSchema>>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setIsLoading(true);
 
     signIn("credentials", {

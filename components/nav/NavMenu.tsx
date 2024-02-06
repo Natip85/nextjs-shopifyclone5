@@ -37,6 +37,12 @@ const NavMenu = ({ currentUser }: NavMenuProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[300px]">
         <DropdownMenuItem
+          onClick={() => router.push("/manage-account")}
+          className="cursor-pointer flex gap-2 items-center"
+        >
+          <Settings size={15} /> <span>Manage account</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem
           onClick={() => router.push("/settings")}
           className="cursor-pointer flex gap-2 items-center"
         >

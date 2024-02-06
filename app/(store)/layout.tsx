@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Sidebar from "@/components/nav/Sidebar";
 import getCurrentUser from "@/actions/getCurrentUser";
 import MainNavbar from "@/components/nav/MainNavbar";
+import Bottombar from "@/components/nav/Bottombar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,9 +31,10 @@ export default async function RootLayout({
           <main className="flex flex-row">
             <Sidebar />
             <section className="flex min-h-screen flex-1 flex-col items-center px-6 pb-10 pt-28 max-md:pb-32 sm:px-10">
-              <div className="w-full max-w-5xl bg-red-500">{children}</div>
+              <div className="w-full max-w-5xl">{children}</div>
             </section>
           </main>
+          <Bottombar />
         </AuthContext>
       </body>
     </html>

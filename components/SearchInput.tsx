@@ -41,7 +41,7 @@ const SearchInput = () => {
         value={value}
         onChange={onChange}
         placeholder="Search"
-        className="pl-10 bg-primary/10"
+        className="pl-10 w-[350px] lg:w-[500px]"
       />
     </div>
   );

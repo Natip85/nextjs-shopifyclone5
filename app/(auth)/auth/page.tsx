@@ -1,4 +1,3 @@
-import Container from "@/components/Container";
 import AuthForm from "@/components/auth/AuthForm";
 const Auth = () => {
   return (

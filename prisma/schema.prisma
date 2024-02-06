@@ -38,11 +38,72 @@ model Account {
   scope             String?
   id_token          String? @db.String
   session_state     String?
-
   userId            String  @db.ObjectId
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@unique([provider, providerAccountId])
+}
+
+model Product {
+  id                    String @id @default(auto()) @map("_id") @db.ObjectId
+  available             Boolean
+  collections           Collection[]
+  comparePriceAt        Int
+  createdAt             DateTime @default(now())
+  description           String
+  featuredImage         Image
+  images                Image[]
+  options               ProductOption[]
+  price                 Int
+  productCategory       String
+  productType           String
+  status                String
+  taxable               Boolean
+  title                 String
+  totalInventory        Int
+  totalVariants         Int?
+  variants              Variant[]
+}
+
+type ProductOption {
+  id                Int
+  name              String  
+  values            ProductOptionValue[]
+ 
+}
+
+type ProductOptionValue {
+  id                Int
+  name              String
+
+}
+
+model Variant {
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  available         Boolean
+  comparePriceAt    Int
+  featuredImage     Image
+  images            Image[]
+  options           String[]
+  price             Int?
+  requiresShipping  Boolean
+  sku               String
+  taxable           Boolean
+  title             String
+  weight            Int
+  weightUnit        String
+  inventoryQuantity Int
+  parentId          String  @db.ObjectId
+  product           Product @relation(fields: [parentId], references: [id], onDelete: Cascade)
+}
+
+type Collection {
+  id                   Int
+  title                String
+  allProductsCount     Int
+  allTypes             String[]
+  description          String
+  featuredImage        Image
+  createdAt            DateTime  @default(now())
 }
 
 model Orders {
@@ -63,11 +124,6 @@ model Orders {
   user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
 type Addresses {
   address1          String
   address2          String 
@@ -80,8 +136,22 @@ type Addresses {
   phone             String
   street            String
   userId            String
-  
 }
+
+type Image {
+  id                Int
+  alt               String
+  productId         String
+  src               String
+  image             String
+  path              String
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
 enum FulfillmentStatusLabel {
   COMPLETE  
   FULFILLED
@@ -89,6 +159,18 @@ enum FulfillmentStatusLabel {
   RESTOCKED
   UNFULFILLED 
 }
+
+enum ProductStatuses {
+  ACTIVE
+  DRAFT
+}
+
+
+
+
+
+
+
 
 
 

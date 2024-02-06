@@ -26,7 +26,7 @@ const MainNavbar = ({ currentUser }: NavMenuProps) => {
             />
             <div className={"font-bold text-xl  text-white"}>Shopifyclone</div>
           </div>
-          <div className="hidden sm:block">
+          <div className="hidden md:block">
             <SearchInput />
           </div>
           <div className="flex items-center justify-between">

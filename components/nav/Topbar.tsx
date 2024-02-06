@@ -54,7 +54,7 @@ const Topbar = ({ currentUser }: TobarProps) => {
         {/* <SearchInput /> */}
         <div className="flex gap-1 items-center">
           <div className="flex mr-2">
-            {/* <ThemeToggle /> */}toggle
+            {/* <ThemeToggle /> */}
             {/* <NavMenu /> */}
           </div>
           {/* <UserButton afterSignOutUrl="/" /> */}

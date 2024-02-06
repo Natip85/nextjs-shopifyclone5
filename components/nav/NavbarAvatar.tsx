@@ -20,7 +20,7 @@ const NavbarAvatar = ({ src, currentUser }: AvatarProps) => {
   }
   return (
     <div className="bg-white rounded">
-      <User />
+      <User size={35} />
     </div>
   );
 };
