@@ -50,17 +50,20 @@ model Product {
   comparePriceAt        Int
   createdAt             DateTime @default(now())
   description           String
-  featuredImage         Image
+  featuredImage         Image[]
   images                Image[]
   options               ProductOption[]
   price                 Int
   productCategory       String
-  productType           String
+  productType           String?
+  sku                   String
   status                String
   taxable               Boolean
   title                 String
   totalInventory        Int
   totalVariants         Int?
+  weight                Int
+  weightUnit            String
   variants              Variant[]
 }
 
@@ -79,21 +82,21 @@ type ProductOptionValue {
 
 model Variant {
   id                String @id @default(auto()) @map("_id") @db.ObjectId
-  available         Boolean
-  comparePriceAt    Int
-  featuredImage     Image
+  available         Boolean?
+  comparePriceAt    Int?
+  featuredImage     Image?
   images            Image[]
   options           String[]
   price             Int?
-  requiresShipping  Boolean
-  sku               String
-  taxable           Boolean
-  title             String
-  weight            Int
-  weightUnit        String
-  inventoryQuantity Int
+  requiresShipping  Boolean?
+  sku               String?
+  taxable           Boolean?
+  title             String?
+  weight            Int?
+  weightUnit        String?
+  inventoryQuantity Int?
   parentId          String  @db.ObjectId
-  product           Product @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  product           Product? @relation(fields: [parentId], references: [id], onDelete: Cascade)
 }
 
 type Collection {
@@ -139,12 +142,14 @@ type Addresses {
 }
 
 type Image {
-  id                Int
-  alt               String
-  productId         String
-  src               String
-  image             String
-  path              String
+  key              String
+  name             String
+  url              String
+  size             Int
+  serverData       ServerData
+}
+type ServerData {
+  uploadedBy String    
 }
 
 enum Role {
@@ -160,10 +165,7 @@ enum FulfillmentStatusLabel {
   UNFULFILLED 
 }
 
-enum ProductStatuses {
-  ACTIVE
-  DRAFT
-}
+
 
 
 

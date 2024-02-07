@@ -8,7 +8,6 @@ interface ProductPageProps {
 }
 const Product = async ({ params }: ProductPageProps) => {
   const product = await getProductById(params.productId);
-  console.log("PRODUCT>>>", product);
 
   return (
     <div>

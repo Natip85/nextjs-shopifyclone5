@@ -6,32 +6,24 @@ export const createProductSchema = z.object({
   }),
   description: z.string().optional(),
   price: z.coerce.number().int().optional(),
-  weight: z.coerce.number().int().optional(),
   totalInventory: z.coerce.number().int().optional(),
   comparePriceAt: z.coerce.number().int().optional(),
+  weight: z.coerce.number().int().optional(),
+  weightUnit: z.string().optional(),
   taxable: z.boolean().default(true),
-  // weight: z
-  //   .string()
-  //   .refine((val) => !isNaN(parseFloat(val)), {
-  //     message: "Price must be a valid number",
-  //   })
-  //   .transform((val) => parseFloat(val)),
-  // weightUnit: z.string().optional(),
-  // totalInventory: z
-  //   .string()
-  //   .refine((val) => !isNaN(parseFloat(val)), {
-  //     message: "Price must be a valid number",
-  //   })
-  //   .transform((val) => parseFloat(val)),
+  sku: z.string().optional(),
+  status: z.string().optional(),
+  productCategory: z.string().optional(),
   images: z
     .array(
       z.object({
-        src: z.string(),
-        id: z.number(),
-        alt: z.string(),
-        productId: z.string(),
-        image: z.string(),
-        path: z.string(),
+        key: z.string(),
+        name: z.string(),
+        url: z.string(),
+        size: z.number(),
+        serverData: z.object({
+          uploadedBy: z.string(),
+        }),
       })
     )
     .optional(),
