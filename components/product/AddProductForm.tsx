@@ -21,6 +21,7 @@ import {
   Loader2Icon,
   Pencil,
   PencilLine,
+  Trash2,
   XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -54,6 +55,16 @@ import {
   CommandInput,
   CommandItem,
 } from "../ui/command";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Separator } from "../ui/separator";
 
 interface AddProductFormProps {
   product: ProductWithVariants | null;
@@ -69,7 +80,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
   const [images, setImages] = useState<prisImg[] | undefined>(product?.images);
   const [imageIsDeleting, setImageIsDeleting] = useState(false);
   const [shipping, setShipping] = useState(true);
-
+  const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof createProductSchema>>({
     resolver: zodResolver(createProductSchema),
     defaultValues: product || {
@@ -158,7 +169,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
     const imageKey = image.substring(image.lastIndexOf("/") + 1);
 
     axios
-      .post("/api/uploadthing/delete", { imageKey })
+      .post("/api/uploadthing/delete", { imageKeys: [imageKey] })
       .then((res) => {
         if (res.data.success) {
           const updatedImages = images?.filter((img) => img.key !== imageKey);
@@ -186,6 +197,31 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
       });
   };
 
+  const handleDelete = async (productId: string) => {
+    try {
+      await axios.delete(`/api/product/${productId}`).then((res) => {
+        setOpen(!open);
+        toast({
+          variant: "success",
+          description: "Product deleted",
+        });
+      });
+
+      router.push("/products");
+    } catch (error: any) {
+      console.log(error);
+      setOpen(!open);
+      toast({
+        variant: "destructive",
+        description: `Product deletion could not be completed ${error.message}`,
+      });
+    }
+    const imageKeys = product?.images.map((imgKey) => {
+      return imgKey.key;
+    });
+
+    axios.post("/api/uploadthing/delete", { imageKeys: [imageKeys] });
+  };
   return (
     <div>
       <Form {...form}>
@@ -266,9 +302,9 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                                 <UploadButton
                                   endpoint="imageUploader"
                                   appearance={{
-                                    container: "h-full",
+                                    // container: "h-full",
                                     button:
-                                      "bg-gray-50 text-black border-2 border-gray-200 shadow-md rounded hover:bg-stone-100",
+                                      "bg-gray-50 text-black border-2 border-gray-200 shadow-md rounded hover:bg-stone-100 w-fit px-4",
                                   }}
                                   content={{
                                     button({ ready }) {
@@ -315,7 +351,6 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                                   "bg-gray-50 text-black border-2 border-gray-200 shadow-md rounded-xl hover:bg-stone-100",
                               }}
                               onClientUploadComplete={(res) => {
-                                console.log("IMGRES>>>", res);
                                 setImages((prevImages) => {
                                   if (prevImages && prevImages.length > 0) {
                                     return [...prevImages, ...res];
@@ -614,8 +649,8 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
             </div>
           </div>
           {product ? (
-            <div>
-              <Button disabled={isLoading} className="max-w-[150px]">
+            <div className="flex items-center gap-3">
+              <Button disabled={isLoading} className="max-w-[150px] h-[30px]">
                 {isLoading ? (
                   <>
                     <Loader2Icon className="mr-2 h-4 w-4" /> Updating
@@ -626,10 +661,59 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                   </>
                 )}
               </Button>
+              {/* <Button className="bg-destructive hover:bg-rose-600 h-[30px]">
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete product
+              </Button> */}
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger
+                  className="w-fit p-1 rounded-md hover:bg-slate-100 "
+                  asChild
+                >
+                  <Button
+                    type="button"
+                    className="bg-destructive hover:bg-rose-600 h-[30px]"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete product
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-[900px] w-[90%]">
+                  <DialogHeader className="px-2 mb-3">
+                    <DialogTitle className="mb-3">{`Delete ${product.title} ?`}</DialogTitle>
+                    <Separator className="mb-3" />
+                    <DialogDescription className="text-black mt-3">
+                      Are you sure you want to delete the product{" "}
+                      <span className="font-bold">{product.title}</span>? This
+                      can’t be undone.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <Separator className="my-3" />
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant={"outline"}
+                      className="h-[35px]"
+                      onClick={() => setOpen(!open)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      className="bg-destructive hover:bg-rose-800 h-[35px]"
+                      onClick={() => {
+                        handleDelete(product.id);
+                      }}
+                    >
+                      Delete product
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           ) : (
             <div>
-              <Button disabled={isLoading} className="max-w-[150px]">
+              <Button disabled={isLoading} className="max-w-[150px] h-[30px]">
                 {isLoading ? (
                   <>
                     <Loader2Icon className="mr-2 h-4 w-4" /> Creating

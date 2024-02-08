@@ -24,3 +24,23 @@ export async function PATCH(
     return new NextResponse("Internal server error", { status: 500 });
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { productId: string } }
+) {
+  try {
+    if (!params.productId) {
+      return new NextResponse("Product ID is required", { status: 400 });
+    }
+    const product = await prismadb.product.delete({
+      where: {
+        id: params.productId,
+      },
+    });
+    return NextResponse.json(product);
+  } catch (error) {
+    console.log("Error at /api/product/productId DELETE", error);
+    return new NextResponse("Internal server error", { status: 500 });
+  }
+}

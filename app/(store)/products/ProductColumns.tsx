@@ -5,6 +5,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -19,12 +20,12 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Product } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import axios from "axios";
 import {
   ArrowUpDown,
   Clipboard,
   EyeIcon,
   MoreHorizontal,
-  Plus,
   Trash2,
 } from "lucide-react";
 import Image from "next/image";
@@ -181,6 +182,11 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const product = row.original;
       const productId = product.id;
+      const handleDelete = async (id: string) => {
+        await axios.delete(`/product/${productId}`).then((res) => {
+          console.log(res);
+        });
+      };
       return (
         <div className="flex">
           {/* <Modal
@@ -217,7 +223,7 @@ export const columns: ColumnDef<Product>[] = [
                   View product
                 </Link>
               </DropdownMenuItem>
-              <Dialog>
+              <Dialog onOpenChange={() => {}}>
                 <DialogTrigger className="w-full p-1 rounded-md hover:bg-slate-100 ">
                   <div className="flex items-center hover:cursor-pointer text-sm p-1">
                     <Trash2 className="h-4 w-4 mr-2" />
@@ -225,12 +231,30 @@ export const columns: ColumnDef<Product>[] = [
                   </div>
                 </DialogTrigger>
                 <DialogContent className="max-w-[900px] w-[90%]">
-                  <DialogHeader className="px-2">
-                    <DialogTitle>Add a room</DialogTitle>
-                    <DialogDescription>
-                      Add details about the room in your hotel
+                  <DialogHeader className="px-2 mb-3">
+                    <DialogTitle className="mb-3">{`Delete ${product.title} ?`}</DialogTitle>
+                    <Separator className="mb-3" />
+                    <DialogDescription className="text-black mt-3">
+                      Are you sure you want to delete the product{" "}
+                      <span className="font-bold">{product.title}</span>? This
+                      can’t be undone.
                     </DialogDescription>
                   </DialogHeader>
+                  <Separator className="my-3" />
+                  <DialogFooter>
+                    <Button variant={"outline"} className="h-[35px]">
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      className="bg-destructive hover:bg-rose-800 h-[35px]"
+                      onClick={() => {
+                        handleDelete(product.id);
+                      }}
+                    >
+                      Delete product
+                    </Button>
+                  </DialogFooter>
                 </DialogContent>
               </Dialog>
             </DropdownMenuContent>

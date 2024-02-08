@@ -7,11 +7,19 @@ export async function POST(req: Request) {
   const user = await getCurrentUser();
 
   if (!user?.id) return new NextResponse("Unauthorized", { status: 401 });
-  const { imageKey } = await req.json();
+  const { imageKeys } = await req.json();
 
   try {
-    const res = await utapi.deleteFiles(imageKey);
-    return NextResponse.json(res);
+    if (!Array.isArray(imageKeys)) {
+      return new NextResponse("Bad Request: imageKeys should be an array", {
+        status: 400,
+      });
+    }
+
+    for (const key of imageKeys) {
+      const res = await utapi.deleteFiles(key);
+      return NextResponse.json(res);
+    }
   } catch (error) {
     console.log("error at uploadthing/delete", error);
     return new NextResponse("Internal Server Error/ delete", { status: 500 });
