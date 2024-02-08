@@ -30,7 +30,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -183,22 +182,23 @@ export const columns: ColumnDef<Product>[] = [
       const product = row.original;
       const productId = product.id;
       const handleDelete = async (id: string) => {
-        await axios.delete(`/product/${productId}`).then((res) => {
-          console.log(res);
-        });
+        try {
+          await axios.delete(`/api/product/${id}`);
+          const imageKeys = product?.images.map((imgKey) => {
+            return imgKey.key;
+          });
+
+          axios.post("/api/uploadthing/delete", { imageKeys: [imageKeys] });
+          window.location.reload();
+        } catch (error: any) {
+          console.log(error);
+        }
       };
       return (
         <div className="flex">
-          {/* <Modal
-            icon={<FaTrashCan style={{ color: "red" }} />}
-            onConfirm={() => handleDelete(product.id, product.images)}
-            title="Delete product?"
-            description="If you delete, this cannot be undone."
-            btnTitle="Delete product"
-          /> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="w-8 h-8 p-0">
+              <Button type="button" variant="ghost" className="w-8 h-8 p-0">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -223,7 +223,7 @@ export const columns: ColumnDef<Product>[] = [
                   View product
                 </Link>
               </DropdownMenuItem>
-              <Dialog onOpenChange={() => {}}>
+              <Dialog>
                 <DialogTrigger className="w-full p-1 rounded-md hover:bg-slate-100 ">
                   <div className="flex items-center hover:cursor-pointer text-sm p-1">
                     <Trash2 className="h-4 w-4 mr-2" />

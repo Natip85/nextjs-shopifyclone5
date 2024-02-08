@@ -652,13 +652,13 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
             <div className="flex items-center gap-3">
               <Button disabled={isLoading} className="max-w-[150px] h-[30px]">
                 {isLoading ? (
-                  <>
+                  <span className="flex items-center">
                     <Loader2Icon className="mr-2 h-4 w-4" /> Updating
-                  </>
+                  </span>
                 ) : (
-                  <>
-                    <PencilLine className="mr-2 h-4 w-4" /> Update
-                  </>
+                  <span className="flex items-center">
+                    <PencilLine className="mr-2 h-4 w-4" /> Update product
+                  </span>
                 )}
               </Button>
               {/* <Button className="bg-destructive hover:bg-rose-600 h-[30px]">
