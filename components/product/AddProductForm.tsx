@@ -262,7 +262,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                                   </Button>
                                 </div>
                               ))}
-                              <div className="outline-dashed outline-gray-400 p-4 rounded-lg transition hover:bg-stone-100 bg-stone-50 flex justify-center items-center">
+                              <div className="border border-dashed outline-gray-400 p-4 rounded-lg transition hover:bg-stone-100 bg-stone-50 flex justify-center items-center">
                                 <UploadButton
                                   endpoint="imageUploader"
                                   appearance={{
@@ -307,7 +307,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                             </div>
                           </div>
                         ) : (
-                          <div className="outline-dashed outline-gray-400 py-8 rounded-lg transition hover:bg-stone-100 bg-stone-50">
+                          <div className="border border-dashed outline-gray-400 py-8 rounded-lg transition hover:bg-stone-100 bg-stone-50">
                             <UploadButton
                               endpoint="imageUploader"
                               appearance={{
