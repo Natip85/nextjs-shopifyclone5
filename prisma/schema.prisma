@@ -55,7 +55,7 @@ model Product {
   options               ProductOption[]
   price                 Int
   productCategory       String
-  productType           String?
+  productType           String
   sku                   String
   status                String
   taxable               Boolean

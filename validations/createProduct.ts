@@ -14,6 +14,7 @@ export const createProductSchema = z.object({
   sku: z.string().optional(),
   status: z.string().optional(),
   productCategory: z.string().optional(),
+  productType: z.string().optional(),
   images: z
     .array(
       z.object({

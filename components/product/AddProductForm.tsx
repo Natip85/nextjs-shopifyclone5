@@ -67,11 +67,9 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [images, setImages] = useState<prisImg[] | undefined>(product?.images);
-  console.log("IMAGES>>>", images);
-
   const [imageIsDeleting, setImageIsDeleting] = useState(false);
   const [shipping, setShipping] = useState(true);
-  const [manualCategory, setManualCategory] = useState("");
+
   const form = useForm<z.infer<typeof createProductSchema>>({
     resolver: zodResolver(createProductSchema),
     defaultValues: product || {
@@ -87,6 +85,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
       images: undefined,
       status: ProductStatus.DRAFT,
       productCategory: "",
+      productType: "",
     },
   });
 
@@ -105,11 +104,8 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
 
     const editedData = {
       ...values,
-      available: values.productCategory === "Draft" ? false : true,
+      available: values.status === "Draft" ? false : true,
       featuredImage: undefined,
-      productCategory: values.productCategory
-        ? values.productCategory
-        : manualCategory,
       images: images,
     };
     setIsLoading(true);
@@ -266,17 +262,35 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                                   </Button>
                                 </div>
                               ))}
-                              <div className="outline-dashed outline-gray-400 py-8 rounded-lg transition hover:bg-stone-100 bg-stone-50">
+                              <div className="outline-dashed outline-gray-400 p-4 rounded-lg transition hover:bg-stone-100 bg-stone-50 flex justify-center items-center">
                                 <UploadButton
-                                  className="cursor-pointer"
                                   endpoint="imageUploader"
                                   appearance={{
+                                    container: "h-full",
                                     button:
-                                      "bg-gray-50 text-black border-2 border-gray-200 shadow-md rounded-xl hover:bg-stone-100",
+                                      "bg-gray-50 text-black border-2 border-gray-200 shadow-md rounded hover:bg-stone-100",
+                                  }}
+                                  content={{
+                                    button({ ready }) {
+                                      if (ready) return <div>Add</div>;
+
+                                      return "";
+                                    },
+                                    allowedContent({ ready, isUploading }) {
+                                      if (!ready)
+                                        return "Checking what you allow";
+                                      if (isUploading) return "Loading...";
+                                      return "Images up to 16MB";
+                                    },
                                   }}
                                   onClientUploadComplete={(res) => {
-                                    console.log("IMGRES>>>", res);
-                                    setImages(res);
+                                    setImages((prevImages) => {
+                                      if (prevImages && prevImages.length > 0) {
+                                        return [...prevImages, ...res];
+                                      } else {
+                                        return res;
+                                      }
+                                    });
                                     toast({
                                       variant: "success",
                                       description: "Upload Completed",
@@ -295,7 +309,6 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                         ) : (
                           <div className="outline-dashed outline-gray-400 py-8 rounded-lg transition hover:bg-stone-100 bg-stone-50">
                             <UploadButton
-                              className="cursor-pointer"
                               endpoint="imageUploader"
                               appearance={{
                                 button:
@@ -303,7 +316,13 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                               }}
                               onClientUploadComplete={(res) => {
                                 console.log("IMGRES>>>", res);
-                                setImages(res);
+                                setImages((prevImages) => {
+                                  if (prevImages && prevImages.length > 0) {
+                                    return [...prevImages, ...res];
+                                  } else {
+                                    return res;
+                                  }
+                                });
                                 toast({
                                   variant: "success",
                                   description: "Upload Completed",
@@ -578,18 +597,19 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                     </FormItem>
                   )}
                 />
-
-                <FormItem>
-                  <FormLabel>Product type</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Add custom category"
-                      value={manualCategory}
-                      onChange={(e) => setManualCategory(e.target.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <FormField
+                  control={form.control}
+                  name="productType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Product type</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Add custom category" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
           </div>

@@ -20,6 +20,7 @@ export const weightUnitsArray = ["lb", "g", "oz", "kg"];
 export const productStatuses = ["Active", "Draft"];
 
 export const productCategories = [
+  { label: "--", value: "" },
   { label: "Animals & Pet Supplies", value: "animals_pet_supplies" },
   { label: "Apparel & Accessories", value: "apparel_accessories" },
   { label: "Arts & Entertainment", value: "arts_entertainment" },
