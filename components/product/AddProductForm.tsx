@@ -347,7 +347,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                             <div className="grid grid-cols-4 gap-4 col-span-2">
                               {images.map((img, i) => (
                                 <div
-                                  key={img.name}
+                                  key={i}
                                   className={`border border-slate-300 rounded-md relative aspect-square ${
                                     i === 0 ? "row-span-2 col-span-2" : ""
                                   }`}
