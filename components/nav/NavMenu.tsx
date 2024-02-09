@@ -51,7 +51,7 @@ const NavMenu = ({ currentUser }: NavMenuProps) => {
         <Separator />
         <div className="p-2">
           {/* <p className="text-sm font-semibold">{currentUser.name}</p> */}
-          <p className="text-xs">{currentUser.email}</p>
+          {/* <p className="text-xs">{currentUser.email}</p> */}
         </div>
         <DropdownMenuItem
           onClick={() => {
