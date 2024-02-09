@@ -16,7 +16,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Product, Variant } from "@prisma/client";
-import MultiInput from "../MultiInput";
+// import MultiInput from "../MultiInput";
 
 interface AddRoomFormProps {
   product?: Product & {
@@ -73,7 +73,7 @@ const AddVariant = ({ product, variant, close }: AddRoomFormProps) => {
           />
         </div>
 
-        <MultiInput />
+        {/* <MultiInput /> */}
         <Button type="button" onClick={form.handleSubmit(onSubmit)}>
           Done
         </Button>
