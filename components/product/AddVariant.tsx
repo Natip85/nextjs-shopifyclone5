@@ -16,7 +16,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Product, Variant } from "@prisma/client";
-// import MultiInput from "../MultiInput";
+import MultiInput from "../MultiInput";
 
 interface AddRoomFormProps {
   product?: Product & {
@@ -26,30 +26,20 @@ interface AddRoomFormProps {
   close?: () => void;
 }
 const AddVariant = ({ product, variant, close }: AddRoomFormProps) => {
-  const [valueInputs, setValueInputs] = useState<string[]>([""]);
-  const [showAdditionalInput, setShowAdditionalInput] =
-    useState<boolean>(false);
-
-  function handleInputChange(
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    const values = [...valueInputs];
-    values[index] = event.target.value;
-    setValueInputs(values);
-
-    if (values.length === 2) {
-      setShowAdditionalInput(true);
-    }
-  }
+  const [values, setValues] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof createVariantSchema>>({
     resolver: zodResolver(createVariantSchema),
-    defaultValues: {},
+    defaultValues: { name: "" },
   });
   function onSubmit(values: z.infer<typeof createVariantSchema>) {
     console.log("VARVALUES>>>", values);
   }
+
+  const handleSetTags = (value: any) => {
+    console.log("THEVALS>>", value);
+    setValues(value);
+  };
   return (
     <div className="border rounded-md p-4">
       <Form {...form}>
@@ -73,7 +63,19 @@ const AddVariant = ({ product, variant, close }: AddRoomFormProps) => {
           />
         </div>
 
-        {/* <MultiInput /> */}
+        <FormField
+          control={form.control}
+          name="values"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Add Data Point(s)</FormLabel>
+              <FormControl>
+                <MultiInput value={values} onChange={handleSetTags} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="button" onClick={form.handleSubmit(onSubmit)}>
           Done
         </Button>
