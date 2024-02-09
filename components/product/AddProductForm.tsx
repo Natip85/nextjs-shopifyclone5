@@ -15,6 +15,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
+  ArrowLeft,
   Check,
   ChevronsUpDown,
   Loader2,
@@ -46,7 +47,7 @@ import {
 import { UploadButton } from "../uploadthing";
 import { useToast } from "../ui/use-toast";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Command,
@@ -57,6 +58,7 @@ import {
 } from "../ui/command";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -65,6 +67,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Separator } from "../ui/separator";
+import Modal from "../Modal";
 
 interface AddProductFormProps {
   product: ProductWithVariants | null;
@@ -75,12 +78,14 @@ export type ProductWithVariants = Product & {
 
 const AddProductForm = ({ product }: AddProductFormProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [images, setImages] = useState<prisImg[] | undefined>(product?.images);
   const [imageIsDeleting, setImageIsDeleting] = useState(false);
   const [shipping, setShipping] = useState(true);
   const [open, setOpen] = useState(false);
+  const [leave, setLeave] = useState(false);
   const form = useForm<z.infer<typeof createProductSchema>>({
     resolver: zodResolver(createProductSchema),
     defaultValues: product || {
@@ -197,7 +202,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
       });
   };
 
-  const handleDelete = async (productId: string) => {
+  const handleProductDelete = async (productId: string) => {
     try {
       await axios.delete(`/api/product/${productId}`).then((res) => {
         setOpen(!open);
@@ -222,8 +227,78 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
 
     axios.post("/api/uploadthing/delete", { imageKeys: [imageKeys] });
   };
+
+  const handleLeavePage = () => {
+    if (pathname === "/products/new") {
+      if (Object.keys(form.formState.touchedFields).length > 0) {
+        setLeave(!leave);
+      } else {
+        router.push("/products");
+      }
+    } else {
+      if (Object.keys(form.formState.dirtyFields).length > 0) {
+        setLeave(!leave);
+      } else {
+        router.push("/products");
+      }
+    }
+  };
   return (
     <div>
+      <div className="flex items-center mb-5">
+        <Dialog open={leave} onOpenChange={setLeave}>
+          <Button
+            type="button"
+            variant={"ghost"}
+            onClick={handleLeavePage}
+            className="hover:bg-gray-200 p-0 px-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+
+          <DialogContent className="max-w-[900px] w-[90%]">
+            <DialogHeader>
+              <DialogTitle className="my-3">
+                Leave page with unsaved changes?
+              </DialogTitle>
+              <Separator />
+              <DialogDescription className="py-5 text-black">
+                Leaving this page will delete all unsaved changes.
+              </DialogDescription>
+              <Separator />
+            </DialogHeader>
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  size={"sm"}
+                  variant={"outline"}
+                  className="h-[35px]"
+                  onClick={() => setLeave(!leave)}
+                >
+                  Stay
+                </Button>
+              </DialogClose>
+              <Button
+                type="button"
+                variant="destructive"
+                size={"sm"}
+                onClick={() => {
+                  setLeave(!leave);
+                  router.push("/products");
+                }}
+                className="h-[35px]"
+              >
+                Leave page
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <div className="font-bold text-2xl ml-2">
+          {product ? product.title : "Add product"}
+        </div>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="p-2">
           <div className="flex justify-between flex-col lg:flex-row">
@@ -649,7 +724,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
             </div>
           </div>
           {product ? (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-end gap-3">
               <Button disabled={isLoading} className="max-w-[150px] h-[30px]">
                 {isLoading ? (
                   <span className="flex items-center">
@@ -661,62 +736,23 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                   </span>
                 )}
               </Button>
-              {/* <Button className="bg-destructive hover:bg-rose-600 h-[30px]">
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete product
-              </Button> */}
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger
-                  className="w-fit p-1 rounded-md hover:bg-slate-100 "
-                  asChild
-                >
-                  <Button
-                    type="button"
-                    className="bg-destructive hover:bg-rose-600 h-[30px]"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete product
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-[900px] w-[90%]">
-                  <DialogHeader className="px-2 mb-3">
-                    <DialogTitle className="mb-3">{`Delete ${product.title} ?`}</DialogTitle>
-                    <Separator className="mb-3" />
-                    <DialogDescription className="text-black mt-3">
-                      Are you sure you want to delete the product{" "}
-                      <span className="font-bold">{product.title}</span>? This
-                      can’t be undone.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <Separator className="my-3" />
-                  <DialogFooter>
-                    <Button
-                      type="button"
-                      variant={"outline"}
-                      className="h-[35px]"
-                      onClick={() => setOpen(!open)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="button"
-                      className="bg-destructive hover:bg-rose-800 h-[35px]"
-                      onClick={() => {
-                        handleDelete(product.id);
-                      }}
-                    >
-                      Delete product
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <Modal
+                onConfirm={() => handleProductDelete(product.id)}
+                icon={<Trash2 className="h-4 w-4 mr-2" />}
+                triggerTitle="Delete product"
+                cancelTitle="Cancel"
+                confirmTitle="Delete product"
+                title={`Delete ${product.title}?`}
+                description={`Are you sure you want to delete the product ${product.title}? This can't be undone.`}
+                btnClasses="bg-destructive hover:bg-rose-800 h-[30px] rounded-lg px-2 text-white text-sm flex items-center"
+              />
             </div>
           ) : (
-            <div>
+            <div className="flex items-center justify-end">
               <Button disabled={isLoading} className="max-w-[150px] h-[30px]">
                 {isLoading ? (
                   <>
-                    <Loader2Icon className="mr-2 h-4 w-4" /> Creating
+                    <Loader2Icon className="mr-2 h-4 w-4" /> Creating...
                   </>
                 ) : (
                   <>

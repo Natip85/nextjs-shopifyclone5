@@ -1,4 +1,5 @@
 "use client";
+import Modal from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -181,7 +182,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const product = row.original;
       const productId = product.id;
-      const handleDelete = async (id: string) => {
+      const handleProductDelete = async (id: string) => {
         try {
           await axios.delete(`/api/product/${id}`);
           const imageKeys = product?.images.map((imgKey) => {
@@ -223,40 +224,17 @@ export const columns: ColumnDef<Product>[] = [
                   View product
                 </Link>
               </DropdownMenuItem>
-              <Dialog>
-                <DialogTrigger className="w-full p-1 rounded-md hover:bg-slate-100 ">
-                  <div className="flex items-center hover:cursor-pointer text-sm p-1">
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete product
-                  </div>
-                </DialogTrigger>
-                <DialogContent className="max-w-[900px] w-[90%]">
-                  <DialogHeader className="px-2 mb-3">
-                    <DialogTitle className="mb-3">{`Delete ${product.title} ?`}</DialogTitle>
-                    <Separator className="mb-3" />
-                    <DialogDescription className="text-black mt-3">
-                      Are you sure you want to delete the product{" "}
-                      <span className="font-bold">{product.title}</span>? This
-                      can’t be undone.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <Separator className="my-3" />
-                  <DialogFooter>
-                    <Button variant={"outline"} className="h-[35px]">
-                      Cancel
-                    </Button>
-                    <Button
-                      type="button"
-                      className="bg-destructive hover:bg-rose-800 h-[35px]"
-                      onClick={() => {
-                        handleDelete(product.id);
-                      }}
-                    >
-                      Delete product
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+
+              <Modal
+                onConfirm={() => handleProductDelete(product.id)}
+                icon={<Trash2 className="h-4 w-4 mr-2" />}
+                triggerTitle="Delete product"
+                cancelTitle="Cancel"
+                confirmTitle="Delete product"
+                title={`Delete ${product.title}?`}
+                description={`Are you sure you want to delete the product ${product.title}? This can't be undone.`}
+                btnClasses="w-full h-[30px] rounded-md bg-transparent font-normal text-sm text-black flex items-center h-[30px] pl-2 hover:bg-slate-100"
+              />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
