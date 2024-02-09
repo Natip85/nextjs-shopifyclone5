@@ -22,6 +22,7 @@ import {
   Loader2Icon,
   Pencil,
   PencilLine,
+  Plus,
   Trash2,
   XCircle,
 } from "lucide-react";
@@ -64,10 +65,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import Modal from "../Modal";
+import AddVariant from "./AddVariant";
 
 interface AddProductFormProps {
   product: ProductWithVariants | null;
@@ -86,6 +87,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
   const [shipping, setShipping] = useState(true);
   const [open, setOpen] = useState(false);
   const [leave, setLeave] = useState(false);
+  const [addOption, setAddOption] = useState(false);
   const form = useForm<z.infer<typeof createProductSchema>>({
     resolver: zodResolver(createProductSchema),
     defaultValues: product || {
@@ -120,7 +122,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
 
     const editedData = {
       ...values,
-      available: values.status === "Draft" ? false : true,
+      available: values.totalInventory! > 0 ? true : false,
       featuredImage: undefined,
       images: images,
     };
@@ -607,6 +609,21 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
               {product && (
                 <div className="w-full rounded-lg overflow-hidden bg-white p-4 border-2 border-gray-200 shadow-lg mb-5">
                   <h2 className="font-semibold mb-3">Variants</h2>
+                  {addOption ? (
+                    <AddVariant
+                      product={product}
+                      close={() => setAddOption(!addOption)}
+                    />
+                  ) : (
+                    <Button
+                      onClick={() => setAddOption(!addOption)}
+                      variant={"link"}
+                      className="text-sky-600 hover:text-sky-800"
+                    >
+                      <Plus className="h-4 w-4 mr-2" /> Add options like size or
+                      color
+                    </Button>
+                  )}
                 </div>
               )}
             </div>

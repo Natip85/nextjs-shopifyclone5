@@ -86,7 +86,7 @@ model Variant {
   comparePriceAt    Int?
   featuredImage     Image?
   images            Image[]
-  options           String[]
+  options           ProductOption[]
   price             Int?
   requiresShipping  Boolean?
   sku               String?
