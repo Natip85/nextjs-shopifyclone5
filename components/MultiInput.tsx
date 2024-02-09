@@ -22,34 +22,36 @@ const MultiInput = forwardRef<HTMLInputElement, InputTagsProps>(
 
     return (
       <div>
-        <div className="flex bg-red-500">
-          <Input
-            placeholder="Medium"
-            value={pendingDataPoint}
-            onChange={(e) => setPendingDataPoint(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                addPendingDataPoint();
-              } else if (e.key === "," || e.key === " ") {
-                e.preventDefault();
-                addPendingDataPoint();
-              }
-            }}
-            className="w-full"
-            {...props}
-            ref={ref}
-          />
-          {/* <Button
+        <div className="flex items-center justify-between">
+          <div className="w-[90%]">
+            <Input
+              placeholder="Medium"
+              value={pendingDataPoint}
+              onChange={(e) => setPendingDataPoint(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addPendingDataPoint();
+                } else if (e.key === "," || e.key === " ") {
+                  e.preventDefault();
+                  addPendingDataPoint();
+                }
+              }}
+              className="mr-3"
+              {...props}
+              ref={ref}
+            />
+          </div>
+          <Button
             type="button"
-            variant="secondary"
-            className="rounded-l-none border border-l-0"
+            size={"sm"}
+            variant={"outline"}
             onClick={addPendingDataPoint}
           >
             Add
-          </Button> */}
+          </Button>
         </div>
-        <div className="border rounded-md min-h-[2.5rem] overflow-y-auto p-2 flex gap-2 flex-wrap items-center">
+        <div className="min-h-[2.5rem] overflow-y-auto p-2 flex gap-2 flex-wrap items-center mt-2">
           {value.map((item, idx) => (
             <Badge key={idx} variant="secondary">
               {item}
