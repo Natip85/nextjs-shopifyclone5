@@ -2,14 +2,14 @@
 
 import { Search } from "lucide-react";
 import { Input } from "./ui/input";
-import { ChangeEventHandler, useEffect, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ChangeEventHandler, useState } from "react";
+import { useRouter } from "next/navigation";
 // import qs from "query-string";
 // import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 const SearchInput = () => {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  // const pathname = usePathname();
+  // const searchParams = useSearchParams();
   // const title = searchParams.get("title");
 
   const [value, setValue] = useState("");
