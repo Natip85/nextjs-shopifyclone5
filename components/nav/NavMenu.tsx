@@ -26,11 +26,11 @@ const NavMenu = ({ currentUser }: NavMenuProps) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="flex w-[150px] bg-slate-800 hover:bg-slate-700 rounded p-[1px] pl-3 cursor-pointer justify-between items-center">
-          {/* <span className="text-white text-[12px]">{currentUser?.name}</span> */}
+          <span className="text-white text-[12px]">{currentUser?.name}</span>
           <div className="rounded">
             <NavbarAvatar
               src={currentUser?.image}
-              // currentUser={currentUser?.name}
+              currentUser={currentUser?.name}
             />
           </div>
         </div>
@@ -50,8 +50,8 @@ const NavMenu = ({ currentUser }: NavMenuProps) => {
         </DropdownMenuItem>
         <Separator />
         <div className="p-2">
-          {/* <p className="text-sm font-semibold">{currentUser.name}</p> */}
-          {/* <p className="text-xs">{currentUser.email}</p> */}
+          <p className="text-sm font-semibold">{currentUser?.name}</p>
+          <p className="text-xs">{currentUser?.email}</p>
         </div>
         <DropdownMenuItem
           onClick={() => {
