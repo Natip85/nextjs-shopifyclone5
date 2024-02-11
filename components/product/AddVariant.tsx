@@ -1,6 +1,6 @@
 "use client";
 import * as z from "zod";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, XIcon } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -16,8 +16,6 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Product, Variant } from "@prisma/client";
-import MultiInput from "../MultiInput";
-import { Separator } from "../ui/separator";
 import { v4 as uuidv4 } from "uuid";
 import { Badge } from "../ui/badge";
 interface AddRoomFormProps {
@@ -28,29 +26,51 @@ interface AddRoomFormProps {
   close?: () => void;
 }
 const AddVariant = ({ product, variant, close }: AddRoomFormProps) => {
-  const [tagValues, setValues] = useState<string[]>([]);
-  const [isVariantSaved, setIsVariantSaved] = useState(false);
-  const [addAnotherOptionToggle, setAddAnotherOptionToggle] = useState(false);
-
+  const [valuesData, setValuesData] = useState<string[]>([]);
+  const [secondValuesData, setSecondValuesData] = useState<string[]>([]);
+  const [pendingDataPoint, setPendingDataPoint] = useState("");
+  const [secondPendingDataPoint, setSecondPendingDataPoint] = useState("");
+  const [openOptions, setOpenOptions] = useState(false);
   const form = useForm<z.infer<typeof createVariantSchema>>({
     resolver: zodResolver(createVariantSchema),
-    defaultValues: { title: "", options: [] },
+    defaultValues: variant || {
+      title: "",
+      options: [],
+      secondOptions: [],
+    },
   });
-  const handleSetTags = (value: any) => {
-    console.log("THEVALS>>", value);
-    setValues(value);
+
+  const addPendingDataPoint = () => {
+    if (pendingDataPoint) {
+      const newDataPoints = new Set([...valuesData, pendingDataPoint]);
+      setValuesData(Array.from(newDataPoints));
+      setPendingDataPoint("");
+    }
+  };
+  const addSecondPendingDataPoint = () => {
+    if (secondPendingDataPoint) {
+      const newDataPoints = new Set([
+        ...secondValuesData,
+        secondPendingDataPoint,
+      ]);
+      setSecondValuesData(Array.from(newDataPoints));
+      setSecondPendingDataPoint("");
+    }
   };
   function onSubmit(values: z.infer<typeof createVariantSchema>) {
     console.log("VARVALUES>>>", values);
 
-    const options = tagValues.map((value) => ({
+    const options = valuesData.map((value) => ({
+      id: uuidv4(),
+      name: value,
+    }));
+
+    const secondOptions = secondValuesData.map((value) => ({
       id: uuidv4(),
       name: value,
     }));
 
     const finalData = {
-      ...values,
-      title: product?.title,
       options: [
         {
           id: uuidv4(),
@@ -58,158 +78,232 @@ const AddVariant = ({ product, variant, close }: AddRoomFormProps) => {
           values: options,
         },
       ],
+      title: values.secondTitle
+        ? values.title + "/" + values.secondTitle
+        : values.title,
     };
+    if (values.secondTitle) {
+      finalData.options.push({
+        id: uuidv4(),
+        name: values.secondTitle,
+        values: secondOptions,
+      });
+    }
+
     console.log("FINAL>>>", finalData);
   }
 
   return (
-    <div className="border rounded-md p-4">
-      <Form {...form}>
-        {isVariantSaved ? (
-          <div>
-            <div className="min-h-[2.5rem] overflow-y-auto p-2 flex gap-2 flex-wrap items-center mt-2">
-              {tagValues.map((item, idx) => (
-                <Badge key={idx} variant="secondary">
-                  {item}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div>
-            <div className="flex justify-between items-end mb-5">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Option name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Size"
-                        {...field}
-                        className="w-[98%]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button variant={"outline"} type="button">
-                <Trash2
-                  className="h-4 w-4 hover:cursor-pointer text-red-600"
-                  onClick={close}
-                />
-              </Button>
-            </div>
-
-            <FormField
-              control={form.control}
-              name="options"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Add option value(s)</FormLabel>
-                  <FormControl>
-                    <MultiInput
-                      value={tagValues}
-                      onChange={handleSetTags}
-                      className="w-full"
+    <>
+      {openOptions ? (
+        <>
+          <Form {...form}>
+            <div className="border rounded-md p-4">
+              <div>
+                <div className="flex justify-between items-end mb-5">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Option name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Size"
+                            {...field}
+                            className="w-full"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button variant={"outline"} type="button" className="ml-5">
+                    <Trash2
+                      className="h-4 w-4 hover:cursor-pointer text-red-600"
+                      onClick={() => {}}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        )}
-
-        <Separator className="my-3" />
-        <Button
-          type="button"
-          variant={"outline"}
-          // onClick={form.handleSubmit(onSubmit)}
-          onClick={() => setIsVariantSaved(!isVariantSaved)}
-          className="mt-3"
-        >
-          {isVariantSaved ? "Edit" : "Done"}
-        </Button>
-        <Separator className="my-5" />
-        <Button
-          type="button"
-          onClick={() => setAddAnotherOptionToggle(!addAnotherOptionToggle)}
-          variant={"link"}
-          className="text-sky-600 hover:text-sky-800"
-        >
-          <Plus className="h-4 w-4 mr-2" /> Add another option
-        </Button>
-        {!addAnotherOptionToggle ? (
-          <div>
-            <div className="min-h-[2.5rem] overflow-y-auto p-2 flex gap-2 flex-wrap items-center mt-2">
-              {tagValues.map((item, idx) => (
-                <Badge key={idx} variant="secondary">
-                  {item}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div>
-            <div className="flex justify-between items-end mb-5">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Option name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Size"
-                        {...field}
-                        className="w-[98%]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button variant={"outline"} type="button">
-                <Trash2
-                  className="h-4 w-4 hover:cursor-pointer text-red-600"
-                  onClick={close}
-                />
-              </Button>
-            </div>
-
-            <FormField
-              control={form.control}
-              name="options"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Add option value(s)</FormLabel>
-                  <FormControl>
-                    <MultiInput
-                      value={tagValues}
-                      onChange={handleSetTags}
-                      className="w-full"
+                  </Button>
+                </div>
+                <div className="flex items-end justify-between">
+                  <div className="w-full">
+                    <FormField
+                      control={form.control}
+                      name="options"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Add option value(s)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Medium"
+                              value={pendingDataPoint}
+                              onChange={(e) =>
+                                setPendingDataPoint(e.target.value)
+                              }
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addPendingDataPoint();
+                                } else if (e.key === "," || e.key === " ") {
+                                  e.preventDefault();
+                                  addPendingDataPoint();
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              type="button"
-              variant={"outline"}
-              // onClick={form.handleSubmit(onSubmit)}
-              onClick={() => setIsVariantSaved(!isVariantSaved)}
-              className="mt-3"
-            >
-              {isVariantSaved ? "Edit" : "Done"}
-            </Button>
-          </div>
-        )}
-      </Form>
-    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    size={"sm"}
+                    variant={"outline"}
+                    onClick={addPendingDataPoint}
+                    className="ml-5"
+                  >
+                    Add
+                  </Button>
+                </div>
+                <div className="min-h-[2.5rem] overflow-y-auto p-2 flex gap-2 flex-wrap items-center mt-2">
+                  {valuesData.map((item, idx) => (
+                    <Badge key={idx} variant="secondary">
+                      {item}
+                      <button
+                        type="button"
+                        className="w-3 ml-2"
+                        onClick={() => {
+                          setValuesData(valuesData.filter((i) => i !== item));
+                        }}
+                      >
+                        <XIcon className="w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <Button
+                  variant={"outline"}
+                  type="button"
+                  // onClick={form.handleSubmit(onSubmit)}
+                  onClick={() => {}}
+                  className="mt-3"
+                >
+                  Done
+                </Button>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-end mb-5">
+                  <FormField
+                    control={form.control}
+                    name="secondTitle"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Option name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Size"
+                            {...field}
+                            className="w-full"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button variant={"outline"} type="button" className="ml-5">
+                    <Trash2
+                      className="h-4 w-4 hover:cursor-pointer text-red-600"
+                      onClick={() => {}}
+                    />
+                  </Button>
+                </div>
+                <div className="flex items-end justify-between">
+                  <div className="w-full">
+                    <FormField
+                      control={form.control}
+                      name="secondOptions"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Add option value(s)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Medium"
+                              value={secondPendingDataPoint}
+                              onChange={(e) =>
+                                setSecondPendingDataPoint(e.target.value)
+                              }
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addSecondPendingDataPoint();
+                                } else if (e.key === "," || e.key === " ") {
+                                  e.preventDefault();
+                                  addSecondPendingDataPoint();
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    size={"sm"}
+                    variant={"outline"}
+                    onClick={addSecondPendingDataPoint}
+                    className="ml-5"
+                  >
+                    Add
+                  </Button>
+                </div>
+                <div className="min-h-[2.5rem] overflow-y-auto p-2 flex gap-2 flex-wrap items-center mt-2">
+                  {secondValuesData.map((item, idx) => (
+                    <Badge key={idx} variant="secondary">
+                      {item}
+                      <button
+                        type="button"
+                        className="w-3 ml-2"
+                        onClick={() => {
+                          setSecondValuesData(
+                            secondValuesData.filter((i) => i !== item)
+                          );
+                        }}
+                      >
+                        <XIcon className="w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <Button
+                  variant={"outline"}
+                  type="button"
+                  // onClick={form.handleSubmit(onSubmit)}
+                  onClick={() => {}}
+                  className="mt-3"
+                >
+                  Done
+                </Button>
+              </div>
+            </div>
+          </Form>
+        </>
+      ) : (
+        <div>
+          <Button
+            type="button"
+            onClick={() => setOpenOptions(!openOptions)}
+            variant={"link"}
+            className="text-sky-600 hover:text-sky-800"
+          >
+            <Plus className="h-4 w-4 mr-2" /> Add options like size or color
+          </Button>
+        </div>
+      )}
+    </>
   );
 };
 

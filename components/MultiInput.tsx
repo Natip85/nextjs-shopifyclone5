@@ -1,8 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, InputProps } from "@/components/ui/input";
-import { XIcon } from "lucide-react";
+import { Plus, XIcon } from "lucide-react";
 import { forwardRef, useState } from "react";
+import { Separator } from "./ui/separator";
 
 type InputTagsProps = InputProps & {
   value: string[];
@@ -11,6 +12,8 @@ type InputTagsProps = InputProps & {
 const MultiInput = forwardRef<HTMLInputElement, InputTagsProps>(
   ({ value, onChange, ...props }, ref) => {
     const [pendingDataPoint, setPendingDataPoint] = useState("");
+    const [firstOption, setFirstOption] = useState(false);
+    const [secondOption, setSecondOption] = useState(false);
 
     const addPendingDataPoint = () => {
       if (pendingDataPoint) {
@@ -67,6 +70,53 @@ const MultiInput = forwardRef<HTMLInputElement, InputTagsProps>(
             </Badge>
           ))}
         </div>
+        <Button
+          type="button"
+          variant={"outline"}
+          onClick={() => setFirstOption(!firstOption)}
+          className="mt-3"
+        >
+          {firstOption ? "Edit" : "Done"}
+        </Button>
+        <Separator className="my-5" />
+        {secondOption ? (
+          <>
+            {" "}
+            <div className="w-[90%]">
+              <Input
+                placeholder="Medium"
+                value={pendingDataPoint}
+                onChange={(e) => setPendingDataPoint(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addPendingDataPoint();
+                  } else if (e.key === "," || e.key === " ") {
+                    e.preventDefault();
+                    addPendingDataPoint();
+                  }
+                }}
+                className="mr-3"
+                {...props}
+                ref={ref}
+              />
+              <Button onClick={() => setSecondOption(!secondOption)}>
+                close
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <Button
+              type="button"
+              onClick={() => setSecondOption(!secondOption)}
+              variant={"link"}
+              className="text-sky-600 hover:text-sky-800"
+            >
+              <Plus className="h-4 w-4 mr-2" /> Add another option
+            </Button>
+          </>
+        )}
       </div>
     );
   }
