@@ -1,6 +1,6 @@
 "use client";
 import * as z from "zod";
-import { Loader2Icon, Pencil, PencilLine, XIcon } from "lucide-react";
+import { Loader2Icon, Pencil, PencilLine, Trash2, XIcon } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -137,10 +137,9 @@ const AddVariantForm = ({
             variant: "success",
             description: "Variant created",
           });
-
+          setIsLoading(false);
           handleDialogOpen();
           router.refresh();
-          setIsLoading(false);
         })
         .catch((err) => {
           console.log(err);
@@ -153,6 +152,42 @@ const AddVariantForm = ({
     }
   }
 
+  const handleDeleteVariant = (variant: Variant) => {
+    setIsLoading(true);
+    console.log("VARIANT>>>", variant);
+
+    const imageKeys = variant.images.map((imgKey) => {
+      return imgKey.key;
+    });
+
+    axios
+      .post("/api/uploadthing/delete", { imageKeys: [imageKeys] })
+      .then(() => {
+        axios.delete(`/api/variant/${variant.id}`);
+      })
+      .then(() => {
+        toast({
+          variant: "success",
+          description: "Variant deleted",
+        });
+        setIsLoading(false);
+        handleDialogOpen();
+      })
+      .catch(() => {
+        setIsLoading(false);
+        toast({
+          variant: "destructive",
+          description: "Something went wrong deleting",
+        });
+      })
+      .catch(() => {
+        setIsLoading(false);
+        toast({
+          variant: "destructive",
+          description: "Something went wrong deleting",
+        });
+      });
+  };
   return (
     <div>
       <Form {...form}>
@@ -236,22 +271,41 @@ const AddVariantForm = ({
         </div>
         <div className="pt-4 pb-2">
           {variant ? (
-            <Button
-              onClick={form.handleSubmit(onSubmit)}
-              type="button"
-              disabled={isLoading}
-              className="h-[30px]"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2Icon className="mr-2 h-4 w-4" /> Updating...
-                </>
-              ) : (
-                <>
-                  <PencilLine className="mr-2 h-4 w-4" /> Update variant
-                </>
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={form.handleSubmit(onSubmit)}
+                type="button"
+                disabled={isLoading}
+                className="h-[30px]"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2Icon className="mr-2 h-4 w-4" /> Updating...
+                  </>
+                ) : (
+                  <>
+                    <PencilLine className="mr-2 h-4 w-4" /> Update variant
+                  </>
+                )}
+              </Button>
+              <Button
+                onClick={() => handleDeleteVariant(variant)}
+                type="button"
+                variant={"destructive"}
+                disabled={isLoading}
+                className="h-[30px]"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2Icon className="mr-2 h-4 w-4" /> Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete variant
+                  </>
+                )}
+              </Button>
+            </div>
           ) : (
             <Button
               onClick={form.handleSubmit(onSubmit)}
