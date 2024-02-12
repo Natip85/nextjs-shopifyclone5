@@ -11,14 +11,14 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Pencil } from "lucide-react";
-import AddVariant from "./AddVariant";
 import { Badge } from "../ui/badge";
+import AddVariantForm from "./AddVariantForm";
 
 interface VariantCardProps {
   product?: Product & {
     variants: Variant[];
   };
-  variant?: Variant;
+  variant: Variant;
 }
 const VariantCard = ({ product, variant }: VariantCardProps) => {
   const [open, setOpen] = useState(false);
@@ -30,7 +30,7 @@ const VariantCard = ({ product, variant }: VariantCardProps) => {
     <Card className="mb-3 p-2">
       <CardContent>
         <div className="flex justify-between items-center">
-          <h2 className="font-semibold">{variant?.title}</h2>
+          <h2 className="font-semibold mb-3">{variant.title}</h2>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button
@@ -44,20 +44,21 @@ const VariantCard = ({ product, variant }: VariantCardProps) => {
             </DialogTrigger>
             <DialogContent className="max-w-[900px] w-[90%]">
               <DialogHeader className="px-2">
-                <DialogTitle>Update room</DialogTitle>
+                <DialogTitle>Update variant</DialogTitle>
                 <DialogDescription>
-                  Make changes top this room
+                  Make changes to this variant.
                 </DialogDescription>
               </DialogHeader>
-              <AddVariant
+              <AddVariantForm
+                product={product}
                 variant={variant}
                 handleDialogOpen={handleDialogOpen}
               />
             </DialogContent>
           </Dialog>
         </div>
-        {variant?.options.map((val) => (
-          <div key={val.id} className="flex gap-2">
+        {variant.options.map((val) => (
+          <div key={val.id} className="flex gap-2 overflow-y-auto flex-wrap">
             {val.values.map((tag) => {
               return (
                 <Badge key={tag.id} variant="secondary">

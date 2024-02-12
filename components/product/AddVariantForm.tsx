@@ -28,7 +28,7 @@ interface AddRoomFormProps {
   variant?: Variant;
   handleDialogOpen: () => void;
 }
-const AddVariant = ({
+const AddVariantForm = ({
   product,
   variant,
   handleDialogOpen,
@@ -59,58 +59,98 @@ const AddVariant = ({
     }
   };
   function onSubmit(values: z.infer<typeof createVariantSchema>) {
-    console.log("VARVALUES>>>", values);
-    const options = valuesData.map((value) => ({
-      id: uuidv4(),
-      name: value,
-    }));
+    console.log("FORMVALUES>>>", values);
 
-    const finalData = {
-      options: [
-        {
-          id: uuidv4(),
-          name: values.title,
-          values: options,
-        },
-      ],
-      title: variant?.title
-        ? variant?.title + "/" + values.title
-        : values.title,
-
-      available: product?.totalInventory! > 0 ? true : false,
-      comparePriceAt: 0,
-      price: 0,
-      requiresShipping: true,
-      sku: uuidv4(),
-      taxable: product?.taxable,
-      weight: 0,
-      weightUnit: "lb",
-      inventoryQuantity: 0,
-    };
-
-    console.log("FINAL>>>", finalData);
     setIsLoading(true);
-    if (!product) return;
-    axios
-      .post("/api/variant", { ...finalData, parentId: product?.id })
-      .then((res) => {
-        toast({
-          variant: "success",
-          description: "Variant created",
-        });
+    if (product && variant) {
+      //UPDATE
+      const options = valuesData.map((value) => ({
+        id: uuidv4(),
+        name: value,
+      }));
+      const finalData = {
+        options: [
+          {
+            id: uuidv4(),
+            name: values.title,
+            values: options,
+          },
+        ],
+        title: values.title,
+      };
+      axios
+        .patch(`/api/variant/${variant.id}`, finalData)
+        .then((res) => {
+          toast({
+            variant: "success",
+            description: "Variant updated",
+          });
 
-        handleDialogOpen();
-        router.refresh();
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast({
-          variant: "destructive",
-          description: "Something went wrong",
+          handleDialogOpen();
+          router.refresh();
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            variant: "destructive",
+            description: "Something went wrong",
+          });
+          setIsLoading(false);
         });
-        setIsLoading(false);
-      });
+    } else {
+      //CREATE
+      if (!product) return;
+      const options = valuesData.map((value) => ({
+        id: uuidv4(),
+        name: value,
+      }));
+
+      const finalData = {
+        options: [
+          {
+            id: uuidv4(),
+            name: values.title,
+            values: options,
+          },
+        ],
+        title: variant?.title
+          ? variant?.title + "/" + values.title
+          : values.title,
+
+        available: product?.totalInventory! > 0 ? true : false,
+        comparePriceAt: 0,
+        price: 0,
+        requiresShipping: true,
+        sku: uuidv4(),
+        taxable: product?.taxable,
+        weight: 0,
+        weightUnit: "lb",
+        inventoryQuantity: 0,
+      };
+
+      if (!product) return;
+      axios
+        .post("/api/variant", { ...finalData, parentId: product?.id })
+        .then((res) => {
+          toast({
+            variant: "success",
+            description: "Variant created",
+          });
+
+          handleDialogOpen();
+          router.refresh();
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast({
+            variant: "destructive",
+            description: "Something went wrong",
+          });
+          setIsLoading(false);
+        });
+    }
   }
 
   return (
@@ -236,4 +276,4 @@ const AddVariant = ({
   );
 };
 
-export default AddVariant;
+export default AddVariantForm;

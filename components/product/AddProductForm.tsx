@@ -69,8 +69,8 @@ import {
 } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import Modal from "../Modal";
-import AddVariant from "./AddVariant";
 import VariantCard from "./VariantCard";
+import AddVariantForm from "./AddVariantForm";
 
 interface AddProductFormProps {
   product: ProductWithVariants | null;
@@ -90,7 +90,6 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
   const [open, setOpen] = useState(false);
   const [leave, setLeave] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  console.log("PRODS>>>", product);
   const form = useForm<z.infer<typeof createProductSchema>>({
     resolver: zodResolver(createProductSchema),
     defaultValues: product || {
@@ -649,7 +648,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                             size.
                           </DialogDescription>
                         </DialogHeader>
-                        <AddVariant
+                        <AddVariantForm
                           product={product}
                           handleDialogOpen={handleDialogOpen}
                         />
