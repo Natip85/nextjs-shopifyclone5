@@ -71,6 +71,22 @@ import { Separator } from "../ui/separator";
 import Modal from "../Modal";
 import VariantCard from "./VariantCard";
 import AddVariantForm from "./AddVariantForm";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 
 interface AddProductFormProps {
   product: ProductWithVariants | null;
@@ -626,7 +642,6 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                             />
                           );
                         })}
-                        <Separator className="my-4" />
                       </div>
                     )}
 
@@ -638,7 +653,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                           className="text-sky-600 hover:text-sky-800"
                         >
                           <Plus className="mr-2 h-4 w-4" />
-                          Add a variant
+                          Add a variant like size or color
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-[600px] w-[90%]">
@@ -655,6 +670,93 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                         />
                       </DialogContent>
                     </Dialog>
+                    <Separator className="my-4" />
+                  </div>
+                  {product.variants.map((variant, index) => (
+                    <div key={index}>
+                      <Accordion type="single" collapsible className="w-full ">
+                        <AccordionItem value="item-1">
+                          <AccordionTrigger className="hover:bg-gray-200 p-2">
+                            <div className="flex items-center justify-between w-full">
+                              <div className="flex gap-3 w-full">
+                                <div>
+                                  <Image
+                                    priority
+                                    width={60}
+                                    height={60}
+                                    src={
+                                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTv2rNkxu82jwemyb3lSLkmbyLCqflQDMJPA&usqp=CAU"
+                                    }
+                                    alt={product.title}
+                                    className="rounded-md"
+                                  />
+                                </div>
+
+                                <div>
+                                  <div>{variant.title}</div>
+                                  {variant.options.map((variants, index) => (
+                                    <div key={index} className="flex gap-3">
+                                      <span className="text-sm font-normal text-muted-foreground">
+                                        {variants.values.length} variants
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="flex gap-2 text-xs">
+                                <span>{variant.inventoryQuantity}</span>
+                                <span>available</span>
+                              </div>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="flex items-center gap-3">
+                              <div key={index} className="flex flex-col w-full">
+                                {variant.options.map((option, index) =>
+                                  option.values.map((value, index) => (
+                                    <div
+                                      onClick={() =>
+                                        router.push(`/variants/${value.id}`)
+                                      }
+                                      key={index}
+                                      className="flex items-center justify-between gap-3 hover:bg-gray-200 hover:cursor-pointer p-1"
+                                    >
+                                      <div className="flex items-center gap-3 pl-6">
+                                        <div>
+                                          <Image
+                                            priority
+                                            width={60}
+                                            height={60}
+                                            src={
+                                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTv2rNkxu82jwemyb3lSLkmbyLCqflQDMJPA&usqp=CAU"
+                                            }
+                                            alt={product.title}
+                                            className="rounded-md"
+                                          />
+                                        </div>
+                                        <div className="flex flex-col">
+                                          <span className="font-semibold">
+                                            {value.name}
+                                          </span>
+                                          <span className="text-xs text-muted-foreground">
+                                            {value.id}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div>${variant.price}</div>
+                                    </div>
+                                  ))
+                                )}
+                              </div>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </div>
+                  ))}
+                  <div className="flex justify-between items-center p-2 bg-gray-100">
+                    <div>Total inventory</div>
+                    <div>{product.totalInventory} available</div>
                   </div>
                 </div>
               )}

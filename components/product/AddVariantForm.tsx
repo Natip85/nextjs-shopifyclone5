@@ -172,6 +172,7 @@ const AddVariantForm = ({
         });
         setIsLoading(false);
         handleDialogOpen();
+        router.refresh();
       })
       .catch(() => {
         setIsLoading(false);

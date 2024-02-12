@@ -1,3 +1,4 @@
+"use client";
 import { Product, Variant } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "../ui/card";
@@ -13,6 +14,7 @@ import { Button } from "../ui/button";
 import { Pencil } from "lucide-react";
 import { Badge } from "../ui/badge";
 import AddVariantForm from "./AddVariantForm";
+import { useRouter } from "next/navigation";
 
 interface VariantCardProps {
   product?: Product & {
@@ -22,7 +24,7 @@ interface VariantCardProps {
 }
 const VariantCard = ({ product, variant }: VariantCardProps) => {
   const [open, setOpen] = useState(false);
-
+  const router = useRouter();
   const handleDialogOpen = () => {
     setOpen((prev) => !prev);
   };
@@ -57,11 +59,11 @@ const VariantCard = ({ product, variant }: VariantCardProps) => {
             </DialogContent>
           </Dialog>
         </div>
-        {variant.options.map((val) => (
-          <div key={val.id} className="flex gap-2 overflow-y-auto flex-wrap">
-            {val.values.map((tag) => {
+        {variant.options.map((val, index) => (
+          <div key={index} className="flex gap-2 overflow-y-auto flex-wrap">
+            {val.values.map((tag, index) => {
               return (
-                <Badge key={tag.id} variant="secondary">
+                <Badge key={index} variant="secondary">
                   {tag.name}
                 </Badge>
               );
