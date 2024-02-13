@@ -72,16 +72,6 @@ import Modal from "../Modal";
 import VariantCard from "./VariantCard";
 import AddVariantForm from "./AddVariantForm";
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -106,7 +96,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
   const [open, setOpen] = useState(false);
   const [leave, setLeave] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  console.log("VARIANT>>>", product?.variants);
   const form = useForm<z.infer<typeof createProductSchema>>({
     resolver: zodResolver(createProductSchema),
     defaultValues: product || {
@@ -716,7 +706,9 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                                   option.values.map((value, index) => (
                                     <div
                                       onClick={() =>
-                                        router.push(`/variants/${value.id}`)
+                                        router.push(
+                                          `/products/${product.id}/variants/${value.id}`
+                                        )
                                       }
                                       key={index}
                                       className="flex items-center justify-between gap-3 hover:bg-gray-200 hover:cursor-pointer p-1"
@@ -739,7 +731,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                                             {value.name}
                                           </span>
                                           <span className="text-xs text-muted-foreground">
-                                            {value.id}
+                                            {value.sku}
                                           </span>
                                         </div>
                                       </div>
@@ -754,10 +746,12 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                       </Accordion>
                     </div>
                   ))}
-                  <div className="flex justify-between items-center p-2 bg-gray-100">
-                    <div>Total inventory</div>
-                    <div>{product.totalInventory} available</div>
-                  </div>
+                  {product.variants.length > 0 && (
+                    <div className="flex justify-between items-center p-2 bg-gray-100">
+                      <div>Total inventory</div>
+                      <div>{product.totalInventory} available</div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

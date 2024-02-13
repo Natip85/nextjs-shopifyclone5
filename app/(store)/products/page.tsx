@@ -1,7 +1,7 @@
 import getProducts from "@/actions/getProducts";
 import ProductTable from "@/components/tables/ProductTable";
 import Link from "next/link";
-import { columns } from "./ProductColumns";
+import { columns } from "../../../components/tables/ProductColumns";
 
 const Products = async () => {
   const products = await getProducts();

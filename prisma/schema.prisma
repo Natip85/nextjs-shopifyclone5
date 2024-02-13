@@ -77,7 +77,13 @@ type ProductOption {
 type ProductOptionValue {
   id                String?
   name              String?
-
+  sku               String?
+  images            Image[]
+  price             Int
+  title             String
+  weight            Int
+  weightUnit        String
+  inventoryQuantity Int
 }
 
 model Variant {

@@ -42,6 +42,7 @@ const AddVariantForm = ({
   );
   const [pendingDataPoint, setPendingDataPoint] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<z.infer<typeof createVariantSchema>>({
     resolver: zodResolver(createVariantSchema),
     defaultValues: variant || {
@@ -104,6 +105,12 @@ const AddVariantForm = ({
       const options = valuesData.map((value) => ({
         id: uuidv4(),
         name: value,
+        sku: "SKU" + uuidv4(),
+        price: 0,
+        title: values.title,
+        weight: 0,
+        weightUnit: "lb",
+        inventoryQuantity: 0,
       }));
 
       const finalData = {
