@@ -30,7 +30,7 @@ export default async function RootLayout({
           <MainNavbar currentUser={currentUser} />
           <main className="flex flex-row">
             <Sidebar />
-            <section className="flex min-h-screen flex-1 flex-col items-center px-1 pb-10 pt-28 max-md:pb-32 sm:px-10 bg-stone-100">
+            <section className="flex min-h-screen flex-1 flex-col items-center px-1 pb-10 pt-28 max-md:pb-32 sm:px-10 bg-[#F1F1F1]">
               <div className="w-full max-w-6xl">{children}</div>
             </section>
           </main>

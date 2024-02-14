@@ -75,7 +75,6 @@ const VariantCard = ({ product, variant }: VariantCardProps) => {
           </div>
         </CardContent>
       </Card>
-      <Separator className="my-4" />
     </div>
   );
 };
