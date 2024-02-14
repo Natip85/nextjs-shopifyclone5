@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const Sidebar = () => {
   const pathname = usePathname();
   return (
-    <section className="sticky top-0 left-0 bg-gray-100 pt-[6rem] flex h-screen flex-col justify-between overflow-auto border-r border-r-dark-4 max-md:hidden w-[200px] max-lg:w-[100px] px-5 min-w-[100px]">
+    <section className="sticky top-0 left-0 bg-[#EBEBEB] pt-[6rem] flex h-screen flex-col justify-between overflow-auto border-r border-r-dark-4 max-md:hidden w-[200px] max-lg:w-[100px] px-5 min-w-[100px]">
       <div className="flex w-full flex-1 flex-col gap-2">
         {sidebarLinks.map((link) => {
           const isActive =

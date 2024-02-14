@@ -100,7 +100,49 @@ function ProductTable<TData, TValue>({
                   }}
                   className="mb-3 h-[30px]"
                 />
+                <div className="flex gap-2 items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant={"outline"} className="h-[30px] text-xs">
+                        Columns
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {table
+                        .getAllColumns()
+                        .filter((column) => column.getCanHide())
+                        .map((column) => {
+                          return (
+                            <DropdownMenuCheckboxItem
+                              key={column.id}
+                              className="capitalize"
+                              checked={column.getIsVisible()}
+                              onCheckedChange={(value: boolean) => {
+                                column.toggleVisibility(!!value);
+                              }}
+                            >
+                              {column.id}
+                            </DropdownMenuCheckboxItem>
+                          );
+                        })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Button className="h-[30px]">Export</Button>
+                </div>
+              </div>
 
+              <Button
+                onClick={() => setShowSearch(!showSearch)}
+                variant={"outline"}
+                className="ml-5 h-[30px]"
+              >
+                <Search className="w-4 h-4 mr-2" />
+                <span className="text-xs">Search and filter</span>
+              </Button>
+            </div>
+          ) : (
+            <div className="flex justify-between">
+              <div className="flex gap-2 items-center">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant={"outline"} className="h-[30px] text-xs">
@@ -127,19 +169,8 @@ function ProductTable<TData, TValue>({
                       })}
                   </DropdownMenuContent>
                 </DropdownMenu>
+                <Button className="h-[30px]">Export</Button>
               </div>
-
-              <Button
-                onClick={() => setShowSearch(!showSearch)}
-                variant={"outline"}
-                className="ml-5 h-[30px]"
-              >
-                <Search className="w-4 h-4 mr-2" />
-                <span className="text-xs">Search and filter</span>
-              </Button>
-            </div>
-          ) : (
-            <div className="flex justify-end">
               <Button
                 onClick={() => setShowSearch(!showSearch)}
                 variant={"outline"}

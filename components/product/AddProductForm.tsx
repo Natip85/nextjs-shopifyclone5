@@ -355,7 +355,13 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                       <FormControl>
                         {images ? (
                           <div>
-                            <div className="grid grid-cols-4 gap-4 col-span-2">
+                            <div
+                              className={
+                                images.length > 0
+                                  ? "grid grid-cols-4 gap-4 col-span-2"
+                                  : ""
+                              }
+                            >
                               {images.map((img, i) => (
                                 <div
                                   key={img.name}
@@ -376,7 +382,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                                     type="button"
                                     variant={"ghost"}
                                     size={"icon"}
-                                    className="absolute right-[-1px] top-0"
+                                    className="absolute right-[-1px] top-0 m-2"
                                   >
                                     {imageIsDeleting ? (
                                       <Loader2 />
@@ -641,7 +647,9 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                           className="text-sky-600 hover:text-sky-800"
                         >
                           <Plus className="mr-2 h-4 w-4" />
-                          Add a variant like size or color
+                          {product.variants.length
+                            ? "Add another variant"
+                            : "Add a variant like size or color"}
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-[600px] w-[90%]">
@@ -710,8 +718,8 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                                         <div>
                                           <Image
                                             priority
-                                            width={60}
-                                            height={60}
+                                            width={50}
+                                            height={50}
                                             src={
                                               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTv2rNkxu82jwemyb3lSLkmbyLCqflQDMJPA&usqp=CAU"
                                             }
