@@ -7,18 +7,6 @@ interface VariantsIdPageProps {
 }
 const VariantsId = async ({ params }: VariantsIdPageProps) => {
   const product = await getProductById(params.productId);
-  console.log("PRODUCT>>>>", product);
-  console.log("prodvariants>>>>", product?.variants);
-  console.log(
-    "options>>>>",
-    product?.variants.map((variant) => variant.options)
-  );
-  console.log(
-    "nextoption>>>>",
-    product?.variants?.map((variant) => {
-      variant?.options?.map((option) => option.values);
-    })
-  );
 
   return (
     <div>

@@ -21,7 +21,7 @@ import { Badge } from "../ui/badge";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useToast } from "../ui/use-toast";
-interface AddRoomFormProps {
+interface AddVariantFormProps {
   product?: Product & {
     variants: Variant[];
   };
@@ -32,7 +32,7 @@ const AddVariantForm = ({
   product,
   variant,
   handleDialogOpen,
-}: AddRoomFormProps) => {
+}: AddVariantFormProps) => {
   const { toast } = useToast();
   const router = useRouter();
   const [valuesData, setValuesData] = useState<string[]>(
@@ -42,6 +42,8 @@ const AddVariantForm = ({
   );
   const [pendingDataPoint, setPendingDataPoint] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  console.log("PRODUCT>>>", product);
+  console.log("VARIANT>>>>", variant);
 
   const form = useForm<z.infer<typeof createVariantSchema>>({
     resolver: zodResolver(createVariantSchema),
@@ -60,23 +62,26 @@ const AddVariantForm = ({
     }
   };
   function onSubmit(values: z.infer<typeof createVariantSchema>) {
-    console.log("FORMVALUES>>>", values);
-
     setIsLoading(true);
     if (product && variant) {
       //UPDATE
       const options = valuesData.map((value) => ({
         id: uuidv4(),
-        name: value,
+        name: values.title,
+        values: {
+          id: uuidv4(),
+          price: 0,
+          title: values.title,
+          name: value,
+          weight: 0,
+          weightUnit: "lb",
+          inventoryQuantity: 0,
+          sku: uuidv4(),
+          images: [],
+        },
       }));
       const finalData = {
-        options: [
-          {
-            id: uuidv4(),
-            name: values.title,
-            values: options,
-          },
-        ],
+        options: options,
         title: values.title,
       };
       axios
@@ -102,29 +107,39 @@ const AddVariantForm = ({
     } else {
       //CREATE
       if (!product) return;
+      // const prodOpts = product.variants?.map((variant) => {
+      //   return variant;
+      // });
+
+      // console.log("PRODOPTS>>", prodOpts);
+
+      // const combinations = [];
+
+      // prodOpts.forEach((option) => {
+      //   size.options.forEach((sizeOption) => {
+      //     combinations.push({ name: `${colorOption.name}/${sizeOption.name}` });
+      //   });
+      // });
+
       const options = valuesData.map((value) => ({
         id: uuidv4(),
-        name: value,
-        sku: "SKU" + uuidv4(),
-        price: 0,
-        title: values.title,
-        weight: 0,
-        weightUnit: "lb",
-        inventoryQuantity: 0,
+        name: values.title,
+        values: {
+          id: uuidv4(),
+          price: 0,
+          title: values.title,
+          name: value,
+          weight: 0,
+          weightUnit: "lb",
+          inventoryQuantity: 0,
+          sku: uuidv4(),
+          images: [],
+        },
       }));
 
       const finalData = {
-        options: [
-          {
-            id: uuidv4(),
-            name: values.title,
-            values: options,
-          },
-        ],
-        title: variant?.title
-          ? variant?.title + "/" + values.title
-          : values.title,
-
+        options: options,
+        title: values.title,
         available: product?.totalInventory! > 0 ? true : false,
         comparePriceAt: 0,
         price: 0,
@@ -136,7 +151,6 @@ const AddVariantForm = ({
         inventoryQuantity: 0,
       };
 
-      if (!product) return;
       axios
         .post("/api/variant", { ...finalData, parentId: product?.id })
         .then((res) => {
@@ -161,7 +175,6 @@ const AddVariantForm = ({
 
   const handleDeleteVariant = (variant: Variant) => {
     setIsLoading(true);
-    console.log("VARIANT>>>", variant);
 
     const imageKeys = variant.images.map((imgKey) => {
       return imgKey.key;
@@ -318,7 +331,7 @@ const AddVariantForm = ({
             <Button
               onClick={form.handleSubmit(onSubmit)}
               type="button"
-              disabled={isLoading}
+              disabled={valuesData.length === 0 ? true : false}
               className="h-[30px]"
             >
               {isLoading ? (

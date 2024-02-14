@@ -96,7 +96,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
   const [open, setOpen] = useState(false);
   const [leave, setLeave] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  console.log("VARIANT>>>", product?.variants);
+
   const form = useForm<z.infer<typeof createProductSchema>>({
     resolver: zodResolver(createProductSchema),
     defaultValues: product || {
@@ -127,8 +127,6 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
   }, [form, images]);
 
   function onSubmit(values: z.infer<typeof createProductSchema>) {
-    console.log("ONSUBMIT>>>", values);
-
     const editedData = {
       ...values,
       available: values.totalInventory! > 0 ? true : false,
@@ -636,7 +634,7 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                     )}
 
                     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                      <DialogTrigger asChild>
+                      <DialogTrigger asChild className="mb-3">
                         <Button
                           type="button"
                           variant={"link"}
@@ -660,7 +658,6 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
                         />
                       </DialogContent>
                     </Dialog>
-                    <Separator className="my-4" />
                   </div>
                   {product.variants.map((variant, index) => (
                     <div key={index}>
@@ -684,13 +681,9 @@ const AddProductForm = ({ product }: AddProductFormProps) => {
 
                                 <div>
                                   <div>{variant.title}</div>
-                                  {variant.options.map((variants, index) => (
-                                    <div key={index} className="flex gap-3">
-                                      <span className="text-sm font-normal text-muted-foreground">
-                                        {variants.values.length} variants
-                                      </span>
-                                    </div>
-                                  ))}
+                                  <span className="text-sm font-normal text-muted-foreground">
+                                    {variant.options.length} variants
+                                  </span>
                                 </div>
                               </div>
                               <div className="flex gap-2 text-xs">

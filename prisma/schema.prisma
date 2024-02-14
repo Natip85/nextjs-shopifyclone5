@@ -67,6 +67,26 @@ model Product {
   variants              Variant[]
 }
 
+model Variant {
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  available         Boolean
+  comparePriceAt    Int
+  featuredImage     Image?
+  images            Image[]
+  options           ProductOption[]
+  price             Int
+  requiresShipping  Boolean
+  sku               String
+  taxable           Boolean
+  title             String
+  weight            Int
+  weightUnit        String
+  inventoryQuantity Int
+  createdAt             DateTime @default(now())
+  parentId          String  @db.ObjectId
+  product           Product? @relation(fields: [parentId], references: [id], onDelete: Cascade)
+}
+
 type ProductOption {
   id                String?
   name              String?
@@ -84,25 +104,6 @@ type ProductOptionValue {
   weight            Int
   weightUnit        String
   inventoryQuantity Int
-}
-
-model Variant {
-  id                String @id @default(auto()) @map("_id") @db.ObjectId
-  available         Boolean
-  comparePriceAt    Int
-  featuredImage     Image?
-  images            Image[]
-  options           ProductOption[]
-  price             Int
-  requiresShipping  Boolean
-  sku               String
-  taxable           Boolean
-  title             String
-  weight            Int
-  weightUnit        String
-  inventoryQuantity Int
-  parentId          String  @db.ObjectId
-  product           Product? @relation(fields: [parentId], references: [id], onDelete: Cascade)
 }
 
 type Collection {
