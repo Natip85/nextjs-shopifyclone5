@@ -80,7 +80,7 @@ const Topbar = ({ currentUser }: TobarProps) => {
           ) : (
             <div>
               <Button
-                onClick={() => router.push("/store")}
+                onClick={() => router.push("/home")}
                 size={"sm"}
                 className={cn(
                   "py-4 px-5",

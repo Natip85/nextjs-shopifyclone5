@@ -17,7 +17,7 @@ export const sidebarLinks = [
   {
     icon: <AiOutlineHome size={20} />,
     iconActive: <AiFillHome size={20} />,
-    route: "/store",
+    route: "/home",
     label: "Home",
   },
   {
@@ -47,7 +47,7 @@ export const sidebarLinks = [
   {
     icon: <AiOutlineShop size={20} />,
     iconActive: <AiFillShop size={20} />,
-    route: "/web",
+    route: "/store",
     label: "Live Store",
   },
 ];

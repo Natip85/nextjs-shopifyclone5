@@ -29,7 +29,7 @@ const RegisterForm = () => {
   const session = useSession();
   useEffect(() => {
     if (session?.status === "authenticated") {
-      router.push("/store");
+      router.push("/home");
     }
   }, [session?.status, router]);
 
