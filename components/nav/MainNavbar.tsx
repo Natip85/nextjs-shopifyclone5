@@ -15,7 +15,7 @@ const MainNavbar = ({ currentUser }: NavMenuProps) => {
         <div className="flex justify-between items-center">
           <div
             className="flex items-center gap-1 cursor-pointer"
-            onClick={() => router.push("/store")}
+            onClick={() => router.push("/home")}
           >
             <Image
               src={"/logo.svg"}

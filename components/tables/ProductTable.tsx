@@ -127,7 +127,7 @@ function ProductTable<TData, TValue>({
                         })}
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <Button className="h-[30px]">Export</Button>
+                  <Button className="h-[30px] text-xs">Export</Button>
                 </div>
               </div>
 
@@ -169,7 +169,7 @@ function ProductTable<TData, TValue>({
                       })}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button className="h-[30px]">Export</Button>
+                <Button className="h-[30px] text-xs">Export</Button>
               </div>
               <Button
                 onClick={() => setShowSearch(!showSearch)}
