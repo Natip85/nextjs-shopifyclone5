@@ -26,7 +26,6 @@ export default async function RootLayout({
         <AuthContext>
           <Toaster />
           <main className="flex flex-col min-h-screen bg-secondary">
-            <Topbar currentUser={currentUser} />
             <section className="flex-grow">{children}</section>
           </main>
         </AuthContext>

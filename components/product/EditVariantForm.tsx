@@ -3,7 +3,6 @@ import { Product, Variant } from "@prisma/client";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,

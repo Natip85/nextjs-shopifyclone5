@@ -1,96 +1,58 @@
 "use client";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ThemeToggle } from "../theme-toggle";
-import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
+
+import { topbarLinks } from "@/constants/topbarLinks";
 import Link from "next/link";
+import { Button } from "../ui/button";
+import { ShoppingBag, User } from "lucide-react";
+import Image from "next/image";
+import { TopbarNavMenu } from "./TopbarNavMenu";
+import SideDrawer from "../SideDrawer";
 
-type TobarProps = {
-  currentUser: any;
-};
-const Topbar = ({ currentUser }: TobarProps) => {
-  const [topOfPage, setTopOfPage] = useState<boolean>(true);
-  const router = useRouter();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setTopOfPage(window.scrollY === 0);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  if (pathname !== "/") return null;
-
+const Topbar = () => {
   return (
-    <div
-      className={cn(
-        "fixed top-0 z-30 w-full py-6 px-4",
-        topOfPage ? "" : "bg-stone-900"
-      )}
-    >
-      <div className="flex justify-between items-center">
-        <div
-          className="flex items-center gap-1 cursor-pointer"
-          onClick={() => router.push("/")}
-        >
-          <Image
-            src={"/logo.svg"}
-            alt="logo"
-            width="30"
-            height="30"
-            className="aspect-square"
-          />
-          <div
-            className={cn("font-bold text-xl", topOfPage ? "" : "text-white")}
-          >
-            Shopifyclone
+    <div className="sticky top-0 z-50 bg-white py-2 lg:py-4">
+      <div className="mx-auto box-border flex w-full max-w-screen-xl items-center justify-between px-3 lg:px-8">
+        <Link href={"/"}>
+          <div className="relative">
+            <Image
+              src={"/logo.svg"}
+              alt="logo"
+              width="30"
+              height="30"
+              className="aspect-square"
+            />
           </div>
-        </div>
-        {/* <SearchInput /> */}
-        <div className="flex gap-1 items-center">
-          <div className="flex mr-2">
-            {/* <ThemeToggle /> */}
-            {/* <NavMenu /> */}
+        </Link>
+        <nav className="z-10 max-w-max flex-1 items-center justify-center hidden lg:block">
+          <div className="relative">
+            <ul className="flex flex-1 list-none items-center justify-center space-x-1">
+              <TopbarNavMenu />
+              {/* {topbarLinks.map((link) => {
+                return (
+                  <li key={link.label}>
+                    <Link
+                      href={link.route}
+                      className="px-8 text-lg font-bold text-gray-700 transition-colors hover:text-gray-600 focus:text-gray-600"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })} */}
+            </ul>
           </div>
-          {/* <UserButton afterSignOutUrl="/" /> */}
-          {!currentUser ? (
-            <div className="flex gap-2 items-center">
-              <Link
-                href={"/auth"}
-                className={cn("hover:underline", topOfPage ? "" : "text-white")}
-              >
-                Sign in
-              </Link>
-              <Button
-                onClick={() => router.push("/auth")}
-                size={"sm"}
-                className={cn(
-                  "rounded-2xl py-4 px-5",
-                  topOfPage ? "" : "bg-white text-black"
-                )}
-              >
-                Sign up now
-              </Button>
-            </div>
-          ) : (
-            <div>
-              <Button
-                onClick={() => router.push("/home")}
-                size={"sm"}
-                className={cn(
-                  "py-4 px-5",
-                  topOfPage ? "" : "bg-white text-black hover:text-white"
-                )}
-              >
-                Go to admin
-              </Button>
-            </div>
-          )}
+        </nav>
+        <div className="flex justify-between items-center gap-4">
+          <div>
+            <Button variant={"ghost"} className="p-0">
+              <User />
+            </Button>
+          </div>
+          <div>
+            <Button variant={"ghost"} className="p-0">
+              <SideDrawer />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
