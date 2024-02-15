@@ -42,8 +42,6 @@ const AddVariantForm = ({
   );
   const [pendingDataPoint, setPendingDataPoint] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  console.log("PRODUCT>>>", product);
-  console.log("VARIANT>>>>", variant);
 
   const form = useForm<z.infer<typeof createVariantSchema>>({
     resolver: zodResolver(createVariantSchema),
@@ -107,20 +105,6 @@ const AddVariantForm = ({
     } else {
       //CREATE
       if (!product) return;
-      // const prodOpts = product.variants?.map((variant) => {
-      //   return variant;
-      // });
-
-      // console.log("PRODOPTS>>", prodOpts);
-
-      // const combinations = [];
-
-      // prodOpts.forEach((option) => {
-      //   size.options.forEach((sizeOption) => {
-      //     combinations.push({ name: `${colorOption.name}/${sizeOption.name}` });
-      //   });
-      // });
-
       const options = valuesData.map((value) => ({
         id: uuidv4(),
         name: values.title,

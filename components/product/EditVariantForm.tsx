@@ -25,7 +25,6 @@ export type ProductWithVariants = Product & {
 };
 const EditVariantForm = ({ product }: EditVariantFormProps) => {
   const router = useRouter();
-  console.log("EDITVARFORPRODUCT>>>", product);
 
   return (
     <div>
