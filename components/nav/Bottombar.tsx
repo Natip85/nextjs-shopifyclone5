@@ -24,7 +24,7 @@ const Bottombar = (props: Props) => {
               key={link.label}
               target={link.label === "Live Store" ? "_blank" : undefined}
               className={cn(
-                "flex flex-col gap-3 items-center max-lg:justify-center hover:bg-neutral-300 p-1 pl-2 rounded-lg jusify-center",
+                "flex flex-col gap-3 items-center max-lg:justify-center hover:bg-neutral-300 p-1 rounded-lg jusify-center",
                 isActive ? "bg-gray-100" : ""
               )}
             >
