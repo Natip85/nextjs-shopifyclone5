@@ -14,7 +14,6 @@ import { Button } from "../ui/button";
 import { Pencil } from "lucide-react";
 import { Badge } from "../ui/badge";
 import AddVariantForm from "./AddVariantForm";
-import { Separator } from "../ui/separator";
 
 interface VariantCardProps {
   product?: Product & {
